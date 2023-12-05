@@ -1,4 +1,7 @@
+
 import XCTest
+
+@testable import libopenmpi_sys
 @testable import swift_mpi
 
 final class swift_mpiTests: XCTestCase {
@@ -12,7 +15,7 @@ final class swift_mpiTests: XCTestCase {
 
         swift_mpi_init(CommandLine.argc, CommandLine.unsafeArgv)
 
-        var comm =  MPI_COMM_WORLD
+        var comm =  SWIFT_MPI_COMM_WORLD!
         var size: Int32 = 0
         var rank: Int32 = 0
         swift_mpi_comm_size(comm, &size)
