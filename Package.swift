@@ -14,9 +14,16 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
+        .systemLibrary(
+            name: "libopenmpi",
+            pkgConfig: "ompi-c",
+            providers: [
+                .apt(["libopenmpi-dev"]),
+            ]
+        ),
         .target(
             name: "swift_mpi",
-            dependencies: []
+            dependencies: ["libopenmpi"]
         ),
         .testTarget(
             name: "swift_mpiTests",
