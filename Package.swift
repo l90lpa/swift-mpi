@@ -10,6 +10,9 @@ let package = Package(
         .library(
             name: "swift_mpi",
             targets: ["swift_mpi"]),
+        .library(
+            name: "libopenmpi_sys",
+            targets: ["libopenmpi_sys"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -22,8 +25,12 @@ let package = Package(
             ]
         ),
         .target(
-            name: "swift_mpi",
+            name: "libopenmpi_sys",
             dependencies: ["libopenmpi"]
+        ),
+        .target(
+            name: "swift_mpi",
+            dependencies: ["libopenmpi", "libopenmpi_sys"]
         ),
         .testTarget(
             name: "swift_mpiTests",
