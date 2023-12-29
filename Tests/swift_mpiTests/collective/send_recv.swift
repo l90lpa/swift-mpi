@@ -4,7 +4,7 @@ import XCTest
 @testable import libopenmpi_sys
 @testable import swift_mpi
 
-final class swift_mpiTests: XCTestCase {
+final class send_recv: XCTestCase {
     func test_mpi_send_recv() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest
@@ -15,14 +15,12 @@ final class swift_mpiTests: XCTestCase {
 
         swift_mpi_init(CommandLine.argc, CommandLine.unsafeArgv)
 
-        var comm =  SWIFT_MPI_COMM_WORLD!
-        var size: Int32 = 0
-        var rank: Int32 = 0
-        swift_mpi_comm_size(comm, &size)
-        swift_mpi_comm_rank(comm, &rank)
+        let comm =  SWIFT_MPI_COMM_WORLD!
+        let size = swift_mpi_comm_size(comm)
+        let rank = swift_mpi_comm_rank(comm)
 
         let count = 4
-        var sendbuf = [Double](repeating: Double(rank + 1), count: count)
+        let sendbuf = [Double](repeating: Double(rank + 1), count: count)
         var recvbuf = [Double](repeating: Double(rank + 1), count: count)
 
         if size > 1 {
@@ -40,6 +38,7 @@ final class swift_mpiTests: XCTestCase {
             }
         }
 
-        swift_mpi_finalize()
+        // swift_mpi_finalize()
     }
+
 }
