@@ -1,8 +1,9 @@
 
 import libopenmpi
 import libopenmpi_sys
+import _Differentiation
 
-public protocol MPIEquivalent {
+public protocol MPIEquivalent: Numeric {
     static func mpi_equivalent() -> MPI_Datatype
 }
 
