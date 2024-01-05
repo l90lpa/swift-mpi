@@ -8,7 +8,8 @@ final class allreduce: XCTestCase {
 
     func test_mpi_allreduce() throws {
 
-        swift_mpi_init(CommandLine.argc, CommandLine.unsafeArgv)
+        // swift_mpi_init(CommandLine.argc, CommandLine.unsafeArgv)
+        GlobalTestObservationCenter.shared.registerAllObservers()
 
         let comm =  SWIFT_MPI_COMM_WORLD!
         let op = SWIFT_MPI_SUM!
@@ -27,6 +28,6 @@ final class allreduce: XCTestCase {
                                                            Double(4*size)), "recvbuf equal to sendbuf on rank 0.")
         }
 
-        swift_mpi_finalize()
+        // swift_mpi_finalize()
     }
 }

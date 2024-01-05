@@ -8,7 +8,7 @@ final class sendrecv: XCTestCase {
 
     func test_mpi_sendrecv() throws {
 
-        swift_mpi_init(CommandLine.argc, CommandLine.unsafeArgv)
+        GlobalTestObservationCenter.shared.registerAllObservers()
 
         let comm =  SWIFT_MPI_COMM_WORLD!
         let size = swift_mpi_comm_size(comm)
@@ -38,7 +38,5 @@ final class sendrecv: XCTestCase {
                 XCTAssertEqual(recvbuf, [Double](repeating: 2, count: count), "recvbuf equal to sendbuf on rank 0.")
             }
         }
-
-        swift_mpi_finalize()
     }
 }

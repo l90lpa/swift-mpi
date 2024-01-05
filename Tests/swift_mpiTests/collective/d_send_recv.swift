@@ -5,11 +5,11 @@ import XCTest
 @testable import swift_mpi
 import _Differentiation
 
-final class send_recv: XCTestCase {
+final class d_send_recv: XCTestCase {
 
     func test_vjp_mpi_send_recv() throws {
 
-        swift_mpi_init(CommandLine.argc, CommandLine.unsafeArgv)
+        GlobalTestObservationCenter.shared.registerAllObservers()
 
         let world =  SWIFT_MPI_COMM_WORLD!
         let size = swift_mpi_comm_size(world)
@@ -56,8 +56,6 @@ final class send_recv: XCTestCase {
                 XCTAssertEqual(Dx, [Double].TangentVector([1,0,0,0]), "recvbuf equal to sendbuf on rank 1.")
             }
         }
-
-        swift_mpi_finalize()
     }
 
 }

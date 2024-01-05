@@ -13,7 +13,7 @@ final class send_recv: XCTestCase {
         // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
 
 
-        swift_mpi_init(CommandLine.argc, CommandLine.unsafeArgv)
+        GlobalTestObservationCenter.shared.registerAllObservers()
 
         let comm =  SWIFT_MPI_COMM_WORLD!
         let size = swift_mpi_comm_size(comm)
