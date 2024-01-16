@@ -20,6 +20,6 @@ extension Array where Element: Differentiable {
     }
 }
 
-func zerosLike<T: Numeric>(_ array: [T]) -> [T] {
-    return Array(repeating: 0, count: array.count)
+func zerosLike<T: Datatype>(_ array: [T]) -> [T] {
+    return Array(repeating: T.zero(), count: array.count)
 }

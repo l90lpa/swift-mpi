@@ -3,7 +3,7 @@ import libopenmpi
 import libopenmpi_sys
 import _Differentiation
 
-public func smpi_send<Element: MPIEquivalent>(sendbuf: Array<Element>, dst: Int32, tag: Int32, comm: MPI_Comm) -> Array<Element> {
+public func smpi_send<Element: Datatype>(sendbuf: Array<Element>, dst: Int32, tag: Int32, comm: MPI_Comm) -> Array<Element> {
     print("mpi_send")
     let type = Element.mpi_equivalent()
     let count = Int32(sendbuf.count)
@@ -13,7 +13,7 @@ public func smpi_send<Element: MPIEquivalent>(sendbuf: Array<Element>, dst: Int3
     return zerosLike(sendbuf)
 }
 
-public func smpi_recv<Element: MPIEquivalent>(recvbuf_desc: Array<Element>, src: Int32, tag: Int32, comm: MPI_Comm) -> Array<Element> {
+public func smpi_recv<Element: Datatype>(recvbuf_desc: Array<Element>, src: Int32, tag: Int32, comm: MPI_Comm) -> Array<Element> {
     print("mpi_recv")
     var recvbuf = zerosLike(recvbuf_desc)
     let type = Element.mpi_equivalent()
@@ -24,7 +24,7 @@ public func smpi_recv<Element: MPIEquivalent>(recvbuf_desc: Array<Element>, src:
     return recvbuf
 }
 
-public func smpi_sendrecv<SendElement: MPIEquivalent, RecvElement: MPIEquivalent>(sendbuf: Array<SendElement>, dst: Int32, sendtag: Int32, recvbuf_desc: Array<RecvElement>, src: Int32, recvtag: Int32, comm: MPI_Comm) -> Array<RecvElement> {
+public func smpi_sendrecv<SendElement: Datatype, RecvElement: Datatype>(sendbuf: Array<SendElement>, dst: Int32, sendtag: Int32, recvbuf_desc: Array<RecvElement>, src: Int32, recvtag: Int32, comm: MPI_Comm) -> Array<RecvElement> {
     print("mpi_sendrecv")
     let sendtype = SendElement.mpi_equivalent()
     let sendcount = Int32(sendbuf.count)
@@ -42,7 +42,7 @@ public func smpi_sendrecv<SendElement: MPIEquivalent, RecvElement: MPIEquivalent
 // ========= Derivatives =========
 
 @derivative(of: smpi_send, wrt: 0)
-public func smpi_send_value_and_vjp<Element: MPIEquivalent & Differentiable>(_ sendbuf: Array<Element>, _ dst: Int32, _ tag: Int32, _ comm: MPI_Comm) -> (value: Array<Element>, pullback: (Array<Element>.TangentVector) -> Array<Element>.TangentVector) {
+public func smpi_send_value_and_vjp<Element: Datatype & Differentiable>(_ sendbuf: Array<Element>, _ dst: Int32, _ tag: Int32, _ comm: MPI_Comm) -> (value: Array<Element>, pullback: (Array<Element>.TangentVector) -> Array<Element>.TangentVector) {
     func pullback(_ Dy: Array<Element>.TangentVector) -> Array<Element>.TangentVector {
         let Dx = smpi_recv(recvbuf_desc: sendbuf, src: dst, tag: tag, comm: comm)
         return Array<Element>.TangentVector(Dx as! [Element.TangentVector])
@@ -52,7 +52,7 @@ public func smpi_send_value_and_vjp<Element: MPIEquivalent & Differentiable>(_ s
 }
 
 @derivative(of: smpi_recv, wrt: 0)
-public func smpi_recv_value_and_vjp<Element: MPIEquivalent & Differentiable>(_ recvbuf: Array<Element>, _ src: Int32, _ tag: Int32, _ comm: MPI_Comm) -> (value: Array<Element>, pullback: (Array<Element>.TangentVector) -> Array<Element>.TangentVector) {
+public func smpi_recv_value_and_vjp<Element: Datatype & Differentiable>(_ recvbuf: Array<Element>, _ src: Int32, _ tag: Int32, _ comm: MPI_Comm) -> (value: Array<Element>, pullback: (Array<Element>.TangentVector) -> Array<Element>.TangentVector) {
     func pullback(_ Dy: Array<Element>.TangentVector) -> Array<Element>.TangentVector {
         let buf = Dy.base as! [Element]
         let Dx = smpi_send(sendbuf: buf, dst: src, tag: tag, comm: comm)
@@ -64,7 +64,7 @@ public func smpi_recv_value_and_vjp<Element: MPIEquivalent & Differentiable>(_ r
 }
 
 @derivative(of: smpi_sendrecv, wrt: (0, 3))
-public func smpi_sendrecv_value_and_vjp<SendElement: MPIEquivalent & Differentiable, RecvElement: MPIEquivalent & Differentiable>(_ sendbuf: Array<SendElement>, _ dst: Int32, _ sendtag: Int32, _ recvbuf_desc: Array<RecvElement>, _ src: Int32, _ recvtag: Int32, _ comm: MPI_Comm) -> (value: Array<RecvElement>, pullback: (Array<RecvElement>.TangentVector) -> (Array<SendElement>.TangentVector, Array<RecvElement>.TangentVector)) {
+public func smpi_sendrecv_value_and_vjp<SendElement: Datatype & Differentiable, RecvElement: Datatype & Differentiable>(_ sendbuf: Array<SendElement>, _ dst: Int32, _ sendtag: Int32, _ recvbuf_desc: Array<RecvElement>, _ src: Int32, _ recvtag: Int32, _ comm: MPI_Comm) -> (value: Array<RecvElement>, pullback: (Array<RecvElement>.TangentVector) -> (Array<SendElement>.TangentVector, Array<RecvElement>.TangentVector)) {
     func pullback(_ Dy: Array<RecvElement>.TangentVector) -> (Array<SendElement>.TangentVector, Array<RecvElement>.TangentVector) {
         let Dy_ = Dy.base as! [RecvElement]
         let Dx = smpi_sendrecv(sendbuf: Dy_, dst: src, sendtag: 0, recvbuf_desc: sendbuf, src: dst, recvtag: 0, comm: comm)
