@@ -34,6 +34,7 @@ let package = Package(
         ),
         .testTarget(
             name: "swift_mpiTests",
-            dependencies: ["swift_mpi"]),
+            dependencies: ["swift_mpi"]
+        ),
     ]
 )
