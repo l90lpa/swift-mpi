@@ -1,8 +1,11 @@
 
 #include "include/libopenmpi_sys.h"
+#include "mpi.h"
 
 const MPI_Datatype SWIFT_MPI_FLOAT = MPI_FLOAT;
 const MPI_Datatype SWIFT_MPI_DOUBLE = MPI_DOUBLE;
+const MPI_Datatype SWIFT_MPI_FLOAT_INT = MPI_FLOAT_INT;
+const MPI_Datatype SWIFT_MPI_DOUBLE_INT = MPI_DOUBLE_INT;
 
 const MPI_Comm SWIFT_MPI_COMM_WORLD = MPI_COMM_WORLD;
 
